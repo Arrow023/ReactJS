@@ -2,10 +2,6 @@ import React,{Component} from 'react';
 import {Card,CardImg,CardText,CardBody,CardTitle} from 'reactstrap';
 class Dishdetail extends Component
 {
-    constructor(props)
-    {
-        super(props);
-    }
     renderComments(comments) {
         if (comments != null) {
           let options = { year: "numeric", month: "short", day: "numeric" };
