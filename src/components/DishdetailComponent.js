@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import {Card,CardImg,CardImgOverlay,CardText,CardBody,CardTitle} from 'reactstrap';
+import {Card,CardImg,CardText,CardBody,CardTitle} from 'reactstrap';
 class Dishdetail extends Component
 {
     constructor(props)
@@ -7,7 +7,6 @@ class Dishdetail extends Component
         super(props);
     }
     renderComments(comments) {
-        console.log(comments);
         if (comments != null) {
           let options = { year: "numeric", month: "short", day: "numeric" };
           return comments.map(comment => (
@@ -32,6 +31,7 @@ class Dishdetail extends Component
         else
         {
             return (
+                <div className='container'>
                 <div className='row'>
                     <div className='col-12 col-md-5 m-1'>
                     <Card>
@@ -43,10 +43,10 @@ class Dishdetail extends Component
                     </Card>
                     </div>
                     <div className="col-12 col-md-5 m-1">
-                    <h4>Comments</h4>
-                    {this.renderComments(this.props.selectedDish.comments)}
-                    
+                        <h4>Comments</h4>
+                        {this.renderComments(this.props.selectedDish.comments)}
                     </div>
+                </div>
                 </div>
             );    
         }
