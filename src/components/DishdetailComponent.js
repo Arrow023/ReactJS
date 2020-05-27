@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardImg, CardImgOverlay, CardText, CardBody, CardTitle, Breadcrumb, BreadcrumbItem } from 'reactstrap';
 import { Link } from 'react-router-dom';
-
+import ContactForm from './ContactFormComponent';
     function RenderDish({dish}) {
         return (
             <Card>
@@ -32,7 +32,9 @@ import { Link } from 'react-router-dom';
                 <ul className="list-unstyled">
                     {commentList}
                 </ul>
+                <ContactForm></ContactForm>
             </div>
+            
         );
     }
 
