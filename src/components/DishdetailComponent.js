@@ -14,7 +14,7 @@ import ContactForm from './ContactFormComponent';
         );
     }
 
-    function RenderComments({comments}) {
+    function RenderComments({comments,addComment,dishId}) {
         var commentList = comments.map(comment => {
             return (
                 <li key={comment.id} >
@@ -32,7 +32,7 @@ import ContactForm from './ContactFormComponent';
                 <ul className="list-unstyled">
                     {commentList}
                 </ul>
-                <ContactForm></ContactForm>
+                <ContactForm dishId={dishId} addComment={addComment}/>
             </div>
             
         );
@@ -57,7 +57,9 @@ import ContactForm from './ContactFormComponent';
                             <RenderDish dish={props.dish} />
                         </div>
                         <div className="col-12 col-md-5 m-1">
-                            <RenderComments comments={props.comments} />
+                            <RenderComments comments={props.comments} 
+                            addComment={props.addComment}
+                            dishId={props.dish.id}/>
                         </div>
                     </div>
                 </div>

@@ -1,126 +1,84 @@
-import React,{Component} from 'react';
-import {Modal,Button,ModalHeader,ModalBody, FormGroup,Form,Input,Label,FormFeedback} from 'reactstrap';
+import React, { Component } from 'react';
+import { Card, CardImg, CardImgOverlay, CardText, CardBody, CardTitle, Breadcrumb, BreadcrumbItem, Button, Modal, ModalHeader, ModalBody, Row, Col, Label } from 'reactstrap';
+import { Link } from 'react-router-dom';
+import { Control, LocalForm, Errors } from 'react-redux-form';
+
+const required = (val) => val && val.length;
+const maxLength = (len) => (val) => !(val) || (val.length <= len);
+const minLength = (len) => (val) => val && (val.length >= len);
 class ContactForm extends Component{
-    constructor(props)
-    {
-        super(props);
-        this.state={
-            isModalOpen: false,
-            yourname:'',
-            rating:1,
-            comment:'',
-            touched:{
-                yourname:false
-            }
+    constructor(props){
+        super(props)
+
+        this.state = {
+            isModalOpen: false
         };
-    
-        this.toggleModal= this.toggleModal.bind(this);
-        this.validate=this.validate.bind(this);
-        this.handleInputChange = this.handleInputChange.bind(this);
-        this.handleBlur = this.handleBlur.bind(this);
+
+        this.toggleModal = this.toggleModal.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleBlur = (field) => (event)=>{
-        this.setState({
-            touched:{... this.state.touched,[field]:true}
-        });
+    toggleModal() {
+        this.setState({ isModalOpen: !this.state.isModalOpen });
     }
 
-    toggleModal()
-    {
-        console.log("Toggle");
-        this.setState({
-            isModalOpen: !this.state.isModalOpen,
-            yourname:''
-        });
-
-    }
-    handleInputChange(event)
-    {
-        const target= event.target;
-        const value= target.value;
-        const name =target.name;
-        this.setState({
-            [name]:value
-        }); 
-        // alert("Current state is: "+JSON.stringify(this.state));
-        event.preventDefault();
-    }
-
-    handleSubmit(event)
-    {
-        console.log("Rating: "+this.state.rating+" Your Name: "+this.state.yourname
-        +" Comment: "+this.state.comment);
-        
-        alert("Rating: "+this.state.rating+" Your Name: "+this.state.yourname
-                                +" Comment: "+this.state.comment);
+    handleSubmit(values){
         this.toggleModal();
-        event.preventDefault();
+
+        this.props.addComment(this.props.dishId, values.rating, values.author, values.comment);
     }
 
-    validate(yourname)
-    {
-        const errors={
-            yourname:''
-        }
-        if (this.state.touched.yourname && yourname.length <3)
-            errors.yourname='Must be greater than 3 characters';
-        else if (this.state.touched.yourname && yourname.length >=15)
-            errors.yourname='Must be 15 characters or less';
-        return errors;
-    }
-    render() 
-    {
-        const errors=this.validate(this.state.yourname);
+    render() {
         return (
-            <div className='col-12 col-md-5 m-1'>
-                <Button type='submit' outline className='fa fa-pencil'
-                    onClick={this.toggleModal}> Submit Comment</Button>
-                <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
-                    <ModalHeader toggle={this.toggleModal}>Submit Comment</ModalHeader>
-                    <ModalBody>
-                        <Form onSubmit={this.handleSubmit}>
-                            <FormGroup>
-                                <Label htmlFor='rating'>Rating</Label>
-                                <Input type='select' id='rating' name='rating'
-                                onChange={this.handleInputChange}
-                                innerRef={(input)=>this.rating=input}
-                                >
-                                    <option>1</option>
-                                    <option>2</option>
-                                    <option>3</option>
-                                    <option>4</option>
-                                    <option>5</option>
-                                </Input>
+            <div>
+                <Button outline onClick={this.toggleModal}>
+                    <span className="fa fa-pencil fa-lg"> Submit comment</span>
+                </Button>
 
-                            </FormGroup>
-                            
-                            <FormGroup>
-                                <Label htmlFor='yourname'>Your Name</Label>
-                                <Input type='text' id='yourname' name='yourname'
-                                value={this.state.yourname}
-                                valid ={errors.yourname===''}
-                                invalid = {errors.yourname !==''}
-                                onBlur={this.handleBlur('yourname')}
-                                onChange={this.handleInputChange}
-                                />
-                                <FormFeedback>{errors.yourname}</FormFeedback>
-                                
-                            </FormGroup>
-                            <FormGroup>
-                            <Label htmlFor='comment'>Comment</Label>
-                                <Input type='textarea' id='comment' name='comment'
-                                rows='6'
-                                onChange={this.handleInputChange}
-                                innerRef={(input)=>this.comment=input}/>
-                            </FormGroup>
-                            <Button type='submit' value='submit' className='bg-primary'>Submit</Button>
-                        </Form>
-                    </ModalBody>
-                </Modal>
+                <div className="row row-content">
+                    <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
+                        <ModalHeader toggle={this.toggleModal}> Submit comment</ModalHeader>
+                        <ModalBody>
+                            <div className="col-12 col-md-9">
+                                <LocalForm onSubmit={(values) => this.handleSubmit(values)} >
+                                    <Row className="form-group">
+                                        <Label htmlFor="rating">Rating</Label>
+                                        <Col md={10}>
+                                            <Control.select model=".rating" name="rating" className="form-control" >
+                                                <option>1</option>
+                                                <option>2</option>
+                                                <option>3</option>
+                                                <option>4</option>
+                                                <option>5</option>
+                                            </Control.select>
+                                        </Col>
+                                    </Row>
+
+                                    <Row className="form-group">
+                                        <Label htmlFor="author" md={2}>Your name</Label>
+                                        <Col md={10}>
+                                            <Control.text model=".author" id="author" name="author" placeholder="Author" className="form-control" validators={{ required, minLength:  minLength(3), maxLength: maxLength(15)}} />
+                                            <Errors className="text-danger" model=".author" show="touched" messages={{ required: 'Required', minLength: 'Must be greater than 3 characters', maxLength: 'Must be 15 charaters or less'}} />
+                                        </Col>
+                                    </Row>
+
+                                    <Row className="form-group">
+                                        <Label htmlFor="feedback" md={2}>Your feedback</Label>
+                                        <Col md={10}>
+                                            <Control.textarea model=".comment" id="comment" name="comment" rows="6" className="form-control" validators={{ required }} />
+                                            <Errors className="text-danger" model=".comment" show="touched" messages={{ required: 'Required'}} />
+                                        </Col>
+                                    </Row>
+
+                                    <Button type="submit" value="submit" color="primary">Submit</Button>
+                                </LocalForm>
+                            </div>
+                        </ModalBody>
+                    </Modal>
+                </div>
             </div>
         );
-        
     }
+
 }
 export default ContactForm;
