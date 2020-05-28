@@ -7,6 +7,8 @@ class ContactForm extends Component{
         this.state={
             isModalOpen: false,
             yourname:'',
+            rating:1,
+            comment:'',
             touched:{
                 yourname:false
             }
@@ -47,9 +49,11 @@ class ContactForm extends Component{
 
     handleSubmit(event)
     {
+        console.log("Rating: "+this.state.rating+" Your Name: "+this.state.yourname
+        +" Comment: "+this.state.comment);
         
-        alert("Rating: "+this.rating.value+" Your Name: "+this.yourname.value
-                                +" Comment: "+this.comment.value);
+        alert("Rating: "+this.state.rating+" Your Name: "+this.state.yourname
+                                +" Comment: "+this.state.comment);
         this.toggleModal();
         event.preventDefault();
     }
@@ -79,6 +83,7 @@ class ContactForm extends Component{
                             <FormGroup>
                                 <Label htmlFor='rating'>Rating</Label>
                                 <Input type='select' id='rating' name='rating'
+                                onChange={this.handleInputChange}
                                 innerRef={(input)=>this.rating=input}
                                 >
                                     <option>1</option>
@@ -106,6 +111,7 @@ class ContactForm extends Component{
                             <Label htmlFor='comment'>Comment</Label>
                                 <Input type='textarea' id='comment' name='comment'
                                 rows='6'
+                                onChange={this.handleInputChange}
                                 innerRef={(input)=>this.comment=input}/>
                             </FormGroup>
                             <Button type='submit' value='submit' className='bg-primary'>Submit</Button>
